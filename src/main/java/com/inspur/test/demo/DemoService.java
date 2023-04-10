@@ -44,6 +44,13 @@ public class DemoService implements verifyInterface {
         return SelfResponse.createBySuccessWithDataAndMsg("成功", rtnMap);
     }
 
+    /*
+     * description: 数组的交、并、差集处理
+     * author: jiangyf
+     * date: 2023/4/10 15:28
+     * @param
+     * @return util.SelfResponse
+     */
     public SelfResponse arrayListHandel() {
         // 数据组织
         List<DemoEntity> deptListOld = generateList4Ahadle();
@@ -53,6 +60,7 @@ public class DemoService implements verifyInterface {
         return SelfResponse.createBySuccessWithMsg("123");
 
     }
+
 
 
     /*
@@ -154,7 +162,6 @@ public class DemoService implements verifyInterface {
         }
         return demoList;
     }
-
 
     public List<DemoEntity> generateList4Ahadle() {
         List<DemoEntity> deptList = new ArrayList<>();
