@@ -64,7 +64,6 @@ public class DemoService implements verifyInterface {
     }
 
 
-
     /*
      * description: 对象到Xml
      * author: jiangyf
@@ -72,13 +71,13 @@ public class DemoService implements verifyInterface {
      * @param json
      * @return util.SelfResponse
      */
-    public SelfResponse xmlTransform(Map<String, Object> json)  {
+    public SelfResponse xmlTransform(Map<String, Object> json) {
         if (StringUtils.isEmpty(json.get("proName").toString())) {
             return SelfResponse.createByErrorWithMsg("实体名称为空");
         }
-        try{
+        try {
             Object object = Class.forName(json.get("proName").toString()).newInstance();
-        }catch (ClassNotFoundException | InstantiationException | IllegalAccessException e){
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
         // 组织数据
@@ -121,8 +120,6 @@ public class DemoService implements verifyInterface {
      */
     public SelfResponse decimalCal() {
         // TODO valueOf >= ZERO >>new. 初始化时优先使用valueof(),避免使用new BigDecimal进行初始化
-        double num = 0.2;
-        BigDecimal bigNum = BigDecimal.valueOf(num);
         Map<String, Object> rtnMap = new TreeMap<>();
         // 1-BigDecimal初始化 -ZERO
         long time1 = System.currentTimeMillis();
@@ -149,10 +146,114 @@ public class DemoService implements verifyInterface {
         }
         long time6 = System.currentTimeMillis();
         long valueofMs = time6 - time5;
-        rtnMap.put("3-valueOf耗时", valueofMs);
-        rtnMap.put("4-ZERO与valueof耗时比例", zeroMs / valueofMs);
-        rtnMap.put("5-new与valueof耗时比例", newMs / valueofMs);
+        log.info("------------Start-----------");
+        log.info("valueofMs:" + valueofMs);
+        log.info("zeroMs:" + zeroMs);
+        log.info("newMs:" + newMs);
+        log.info("------------End-----------");
+        rtnMap.put("3-valueOf耗时", valueofMs + "毫秒");
+        rtnMap.put("4-ZERO与valueof耗时比例", zeroMs / valueofMs == 0 ? 1 : valueofMs);
+        rtnMap.put("5-new与valueof耗时比例", newMs / valueofMs == 0 ? 1 : valueofMs);
         return SelfResponse.createBySuccessWithData(rtnMap);
+    }
+
+    /*
+     * description: BigDecimal和double运算对比
+     * author: jiangyf
+     * date: 2023/4/13 17:21
+     * @param input1
+     * @param input2
+     * @param runTimes
+     * @return util.SelfResponse
+     */
+    public SelfResponse decimalBattle(String input1, String input2, String runTimes) {
+        Map<String, Object> rtnMap = new TreeMap<>();
+        double num1 = Double.parseDouble(input1);
+        double num2 = Double.parseDouble(input2);
+        double calTimes = Double.parseDouble(runTimes);
+
+        // double运算
+        long time1 = System.currentTimeMillis();
+        double rstDouble = calByDouble(calTimes, num1, num2);
+        long time2 = System.currentTimeMillis();
+        long doubleMs = time2 - time1;
+
+        // region Bigdecimal运算
+        BigDecimal decInput1 = BigDecimal.valueOf(num1);
+        BigDecimal decInput2 = BigDecimal.valueOf(num2);
+        long time3 = System.currentTimeMillis();
+        BigDecimal rstDecimal = calByBigdecimal(calTimes, decInput1, decInput2);
+        long time4 = System.currentTimeMillis();
+        long decimalMs = time4 - time3;
+        // endregion Bigdecimal运算
+
+        // region 将Bigdecimal转换为double进行运算，然后转换为BigDecimal输出
+        long time5 = System.currentTimeMillis();
+        // 模拟从实体中get后转换为double
+        double double3 = BigDecimal.valueOf(num1).doubleValue();
+        double double4 = BigDecimal.valueOf(num2).doubleValue();
+        // 模拟进行计算
+        double rstTranDouble = calByDouble(calTimes, double3, double4);
+        log.info("模拟运算后double的结果：" + rstTranDouble);
+        // 模拟将结果转换为BigDecimal然后set到实体
+        BigDecimal tranDecimal = BigDecimal.valueOf(rstTranDouble);
+
+        long time6 = System.currentTimeMillis();
+        long transformMs = time6 - time5;
+        // endregion 将Bigdecimal转换为double进行运算，然后转换为BigDecimal输出
+
+        log.info("------------Start-----------");
+        log.info("运算次数：" + calTimes);
+        log.info("double运算结果:" + rstDouble);
+        log.info("double运算耗时:" + doubleMs);
+        log.info("Bigdecimal运算结果:" + rstDecimal);
+        log.info("Bigdecimal运算耗时:" + decimalMs);
+        log.info("double转换Bigdecimal耗时:" + transformMs);
+        log.info("double转换Bigdecimal结果:" + tranDecimal);
+        log.info("------------End-----------");
+
+        rtnMap.put("1-运算次数", calTimes + "次");
+        rtnMap.put("2-double运算结果", rstDouble);
+        rtnMap.put("3-double运算耗时", doubleMs + "毫秒");
+        rtnMap.put("4-Bigdecimal运算结果", rstDecimal);
+        rtnMap.put("5-Bigdecimal运算耗时", decimalMs + "毫秒");
+        rtnMap.put("6-double转换Bigdecimal耗时", transformMs + "毫秒");
+        rtnMap.put("7-double转换Bigdecimal结果", tranDecimal);
+        return SelfResponse.createBySuccessWithData(rtnMap);
+    }
+
+    /*
+     * description: double运算
+     * author: jiangyf
+     * date: 2023/4/13 17:20
+     * @param calTimes
+     * @param input1
+     * @param input2
+     * @return double
+     */
+    public double calByDouble(double calTimes, double input1, double input2) {
+        double rstDouble = 0;
+        for (int i = 0; i < calTimes; i++) {
+            rstDouble += input1 * input2 / input1;
+        }
+        return rstDouble;
+    }
+
+    /*
+     * description: Bigdecimal运算
+     * author: jiangyf
+     * date: 2023/4/13 17:20
+     * @param calTimes
+     * @param input1
+     * @param input2
+     * @return java.math.BigDecimal
+     */
+    public BigDecimal calByBigdecimal(double calTimes, BigDecimal input1, BigDecimal input2) {
+        BigDecimal rstDecimal = BigDecimal.valueOf(0);
+        for (int i = 0; i < calTimes; i++) {
+            rstDecimal = rstDecimal.add(input1.multiply(input2).divide(input1));
+        }
+        return rstDecimal;
     }
 
 
@@ -176,6 +277,13 @@ public class DemoService implements verifyInterface {
         return demoList;
     }
 
+    /*
+     * description: 生成去年组织部门
+     * author: jiangyf
+     * date: 2023/4/13 18:08
+     * @param
+     * @return java.util.List<com.inspur.test.demo.DemoEntity>
+     */
     public List<DemoEntity> generateList4Ahadle() {
         List<DemoEntity> deptList = new ArrayList<>();
         DemoEntity demoEntity = new DemoEntity();
@@ -230,6 +338,13 @@ public class DemoService implements verifyInterface {
         return deptList;
     }
 
+    /*
+     * description: 生成今年组织部门
+     * author: jiangyf
+     * date: 2023/4/13 18:08
+     * @param
+     * @return java.util.List<com.inspur.test.demo.DemoEntity>
+     */
     public List<DemoEntity> generateList4Bhadle() {
         List<DemoEntity> deptList = new ArrayList<>();
         DemoEntity demoEntity = new DemoEntity();

@@ -7,6 +7,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.OptimisticLocking;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "testdemo")
@@ -27,6 +28,12 @@ public class DemoEntity{
 
     @Column(length = 128)
     private String name;
+
+    @Basic
+    private BigDecimal cost;
+
+    @Basic
+    private BigDecimal balance;
 
     @Column(length = 512)
     private String note;
