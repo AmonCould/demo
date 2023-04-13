@@ -1,6 +1,34 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /socket
 spring:
   datasource:
     driver-class-name: dm.jdbc.driver.DmDriver
     url: jdbc:dm://10.110.90.175:5236/DMSERVER?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=utf-8
     username: cloudlm
     password: LMerp_0522.?
+  http:
+    encoding:
+      force: true
+      charset: UTF-8
+  application:
+    name: demoTest
+  freemarker:
+    request-context-attribute: request
+    prefix: /templates/
+    suffix: .html
+    content-type: text/html
+    enabled: true
+    cache: false
+    charset: UTF-8
+    allow-request-override: false
+    expose-request-attributes: true
+    expose-session-attributes: true
+    expose-spring-macro-helpers: true
+  thymeleaf:
+    prefix: classpath:/templates
+    mode: HTML5
+    encoding: UTF-8
+    servlet:
+      content-type: text/html

@@ -112,7 +112,7 @@ public class DemoService implements verifyInterface {
     }
 
     /*
-     * description: BigDecimal示例
+     * description: BigDecimal初始化
      * author: jiangyf
      * date: 2023/4/2 13:20
      * @param
@@ -146,7 +146,17 @@ public class DemoService implements verifyInterface {
         }
         long time6 = System.currentTimeMillis();
         long valueofMs = time6 - time5;
+
+        // new BigDecimal方式的数值差异
+        double testnum = 11.3;
+        BigDecimal valueOfDecimal = BigDecimal.valueOf(testnum);
+        BigDecimal newDecimalDou = new BigDecimal(testnum);
+        BigDecimal newDecimalStr = new BigDecimal("11.3");
+
         log.info("------------Start-----------");
+        log.info("BigDecimal.valueOf方式的值：" + valueOfDecimal);
+        log.info("newDecimal方式的值：" + newDecimalDou);
+        log.info("newDecimalStr方式的值：" + newDecimalStr);
         log.info("valueofMs:" + valueofMs);
         log.info("zeroMs:" + zeroMs);
         log.info("newMs:" + newMs);
@@ -154,6 +164,9 @@ public class DemoService implements verifyInterface {
         rtnMap.put("3-valueOf耗时", valueofMs + "毫秒");
         rtnMap.put("4-ZERO与valueof耗时比例", zeroMs / valueofMs == 0 ? 1 : valueofMs);
         rtnMap.put("5-new与valueof耗时比例", newMs / valueofMs == 0 ? 1 : valueofMs);
+        rtnMap.put("6-BigDecimal.valueOf方式的值", valueOfDecimal);
+        rtnMap.put("7-new BigDecimal4Double方式的值", newDecimalDou);
+        rtnMap.put("8-new BigDecimal4Str方式的值", newDecimalStr);
         return SelfResponse.createBySuccessWithData(rtnMap);
     }
 
