@@ -4,11 +4,13 @@ import cn.hutool.core.util.XmlUtil;
 import com.inspur.test.demo.factory.verifyInterface;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 import com.alibaba.fastjson.JSONObject;
+import com.thoughtworks.xstream.XStream;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import util.SelfResponse;
 
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -64,23 +66,33 @@ public class DemoService implements verifyInterface {
 
 
     /*
-     * description: xml转换
+     * description: 对象到Xml
      * author: jiangyf
      * date: 2023/4/2 9:40
      * @param json
      * @return util.SelfResponse
      */
-    public SelfResponse xmlTransform(Map<String, Object> json) {
+    public SelfResponse xmlTransform(Map<String, Object> json)  {
         if (StringUtils.isEmpty(json.get("proName").toString())) {
             return SelfResponse.createByErrorWithMsg("实体名称为空");
         }
-        if (StringUtils.isEmpty(json.get("proData").toString())) {
-            return SelfResponse.createByErrorWithMsg("实体信息为空");
+        try{
+            Object object = Class.forName(json.get("proName").toString()).newInstance();
+        }catch (ClassNotFoundException | InstantiationException | IllegalAccessException e){
+            throw new RuntimeException(e);
         }
+        // 组织数据
+        List<DemoEntity> demoList = generateList4Bhadle();
+        XStream xstream = new XStream();
+        XStream.setupDefaultSecurity(xstream);
+        xstream.alias("organization", List.class);
+        xstream.alias("department", DemoEntity.class);
+        StringWriter writer = new StringWriter();
+        writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
+        xstream.toXML(demoList, writer);
+        String xmlStr = writer.toString();
 
-        JSONObject jsonObject = JSONObject.parseObject(json.get("proData").toString());
-        Map tmpMap = jsonObject.toJavaObject(Map.class);
-        return SelfResponse.createBySuccessWithData(XmlUtil.mapToXmlStr(tmpMap));
+        return SelfResponse.createBySuccessWithData(xmlStr);
     }
 
 
@@ -97,6 +109,7 @@ public class DemoService implements verifyInterface {
         // 为空、
         verifyInput(tyep, value);
         return SelfResponse.createBySuccess();
+
     }
 
     /*
@@ -172,42 +185,47 @@ public class DemoService implements verifyInterface {
         demoEntity.setNote("装备制造事业部");
         deptList.add(demoEntity);
 
-        demoEntity.setId(UUID.randomUUID().toString());
-        demoEntity.setCode("102");
-        demoEntity.setName("智能工厂开发组");
-        demoEntity.setNote("装备制造事业部");
-        deptList.add(demoEntity);
+        DemoEntity demoEntity1 = new DemoEntity();
+        demoEntity1.setId(UUID.randomUUID().toString());
+        demoEntity1.setCode("102");
+        demoEntity1.setName("智能工厂开发组");
+        demoEntity1.setNote("装备制造事业部");
+        deptList.add(demoEntity1);
 
-        demoEntity.setId(UUID.randomUUID().toString());
-        demoEntity.setCode("103");
-        demoEntity.setName("项目资产开发组");
-        demoEntity.setNote("装备制造事业部");
-        deptList.add(demoEntity);
+        DemoEntity demoEntity2 = new DemoEntity();
+        demoEntity2.setId(UUID.randomUUID().toString());
+        demoEntity2.setCode("103");
+        demoEntity2.setName("项目资产开发组");
+        demoEntity2.setNote("装备制造事业部");
+        deptList.add(demoEntity2);
 
-        demoEntity.setId(UUID.randomUUID().toString());
-        demoEntity.setCode("104");
-        demoEntity.setName("供应链开发组");
-        demoEntity.setNote("智慧管控事业部");
-        deptList.add(demoEntity);
+        DemoEntity demoEntity3 = new DemoEntity();
+        demoEntity3.setId(UUID.randomUUID().toString());
+        demoEntity3.setCode("104");
+        demoEntity3.setName("供应链开发组");
+        demoEntity3.setNote("智慧管控事业部");
+        deptList.add(demoEntity3);
 
-        demoEntity.setId(UUID.randomUUID().toString());
-        demoEntity.setCode("105");
-        demoEntity.setName("财务开发组");
-        demoEntity.setNote("智慧管控事业部");
-        deptList.add(demoEntity);
+        DemoEntity demoEntity4 = new DemoEntity();
+        demoEntity4.setId(UUID.randomUUID().toString());
+        demoEntity4.setCode("105");
+        demoEntity4.setName("财务开发组");
+        demoEntity4.setNote("智慧管控事业部");
+        deptList.add(demoEntity4);
 
-        demoEntity.setId(UUID.randomUUID().toString());
-        demoEntity.setCode("106");
-        demoEntity.setName("数据与集成组");
-        demoEntity.setNote("智慧管控事业部");
-        deptList.add(demoEntity);
+        DemoEntity demoEntity5 = new DemoEntity();
+        demoEntity5.setId(UUID.randomUUID().toString());
+        demoEntity5.setCode("106");
+        demoEntity5.setName("数据与集成组");
+        demoEntity5.setNote("智慧管控事业部");
+        deptList.add(demoEntity5);
 
-
-        demoEntity.setId(UUID.randomUUID().toString());
-        demoEntity.setCode("100");
-        demoEntity.setName("装备制造事业部");
-        demoEntity.setNote("战略大客户事业部");
-        deptList.add(demoEntity);
+        DemoEntity demoEntity6 = new DemoEntity();
+        demoEntity6.setId(UUID.randomUUID().toString());
+        demoEntity6.setCode("100");
+        demoEntity6.setName("船舶与装备事业部");
+        demoEntity6.setNote("战略大客户事业部");
+        deptList.add(demoEntity6);
 
         return deptList;
     }
@@ -221,41 +239,47 @@ public class DemoService implements verifyInterface {
         demoEntity.setNote("装备制造事业部");
         deptList.add(demoEntity);
 
-        demoEntity.setId(UUID.randomUUID().toString());
-        demoEntity.setCode("102");
-        demoEntity.setName("智能工厂开发组");
-        demoEntity.setNote("装备制造事业部");
-        deptList.add(demoEntity);
+        DemoEntity demoEntity1 = new DemoEntity();
+        demoEntity1.setId(UUID.randomUUID().toString());
+        demoEntity1.setCode("102");
+        demoEntity1.setName("智能工厂开发组");
+        demoEntity1.setNote("装备制造事业部");
+        deptList.add(demoEntity1);
 
-        demoEntity.setId(UUID.randomUUID().toString());
-        demoEntity.setCode("103");
-        demoEntity.setName("项目资产开发组");
-        demoEntity.setNote("装备制造事业部");
-        deptList.add(demoEntity);
+        DemoEntity demoEntity2 = new DemoEntity();
+        demoEntity2.setId(UUID.randomUUID().toString());
+        demoEntity2.setCode("103");
+        demoEntity2.setName("项目资产开发组");
+        demoEntity2.setNote("装备制造事业部");
+        deptList.add(demoEntity2);
 
-        demoEntity.setId(UUID.randomUUID().toString());
-        demoEntity.setCode("104");
-        demoEntity.setName("供应链开发组");
-        demoEntity.setNote("装备制造事业部");
-        deptList.add(demoEntity);
+        DemoEntity demoEntity3 = new DemoEntity();
+        demoEntity3.setId(UUID.randomUUID().toString());
+        demoEntity3.setCode("104");
+        demoEntity3.setName("供应链开发组");
+        demoEntity3.setNote("装备制造事业部");
+        deptList.add(demoEntity3);
 
-        demoEntity.setId(UUID.randomUUID().toString());
-        demoEntity.setCode("105");
-        demoEntity.setName("财务开发组");
-        demoEntity.setNote("装备制造事业部");
-        deptList.add(demoEntity);
+        DemoEntity demoEntity4 = new DemoEntity();
+        demoEntity4.setId(UUID.randomUUID().toString());
+        demoEntity4.setCode("105");
+        demoEntity4.setName("财务开发组");
+        demoEntity4.setNote("装备制造事业部");
+        deptList.add(demoEntity4);
 
-        demoEntity.setId(UUID.randomUUID().toString());
-        demoEntity.setCode("106");
-        demoEntity.setName("数据与集成组");
-        demoEntity.setNote("装备制造事业部");
-        deptList.add(demoEntity);
+        DemoEntity demoEntity5 = new DemoEntity();
+        demoEntity5.setId(UUID.randomUUID().toString());
+        demoEntity5.setCode("106");
+        demoEntity5.setName("数据与集成组");
+        demoEntity5.setNote("装备制造事业部");
+        deptList.add(demoEntity5);
 
-        demoEntity.setId(UUID.randomUUID().toString());
-        demoEntity.setCode("100");
-        demoEntity.setName("装备制造事业部");
-        demoEntity.setNote("战略大客户事业部");
-        deptList.add(demoEntity);
+        DemoEntity demoEntity6 = new DemoEntity();
+        demoEntity6.setId(UUID.randomUUID().toString());
+        demoEntity6.setCode("100");
+        demoEntity6.setName("装备制造事业部");
+        demoEntity6.setNote("战略大客户事业部");
+        deptList.add(demoEntity6);
 
         return deptList;
     }

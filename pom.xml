@@ -92,6 +92,14 @@
             <version>5.1.4.RELEASE</version>
         </dependency>
         <!-- webSocket 结束-->
+
+        <!-- XStream 开始-->
+        <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <version>1.4.20</version>
+        </dependency>
+        <!-- XStream 结束-->
     </dependencies>
 
     <build>
