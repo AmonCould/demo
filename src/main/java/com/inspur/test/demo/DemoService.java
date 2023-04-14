@@ -128,7 +128,7 @@ public class DemoService implements verifyInterface {
         }
         long time2 = System.currentTimeMillis();
         long zeroMs = time2 - time1;
-        rtnMap.put("1-ZERO耗时", zeroMs);
+        rtnMap.put("1-ZERO耗时", zeroMs + "毫秒");
 
         // 2-BigDecimal初始化 - new
         long time3 = System.currentTimeMillis();
@@ -137,7 +137,7 @@ public class DemoService implements verifyInterface {
         }
         long time4 = System.currentTimeMillis();
         long newMs = time4 - time3;
-        rtnMap.put("2-new耗时", newMs);
+        rtnMap.put("2-new耗时", newMs + "毫秒");
 
         // 3-BigDecimal初始化 - valueOf
         long time5 = System.currentTimeMillis();
@@ -157,9 +157,9 @@ public class DemoService implements verifyInterface {
         log.info("BigDecimal.valueOf方式的值：" + valueOfDecimal);
         log.info("newDecimal方式的值：" + newDecimalDou);
         log.info("newDecimalStr方式的值：" + newDecimalStr);
-        log.info("valueofMs:" + valueofMs);
-        log.info("zeroMs:" + zeroMs);
-        log.info("newMs:" + newMs);
+        log.info("valueofMs:" + valueofMs + "毫秒");
+        log.info("zeroMs:" + zeroMs + "毫秒");
+        log.info("newMs:" + newMs + "毫秒");
         log.info("------------End-----------");
         rtnMap.put("3-valueOf耗时", valueofMs + "毫秒");
         rtnMap.put("4-ZERO与valueof耗时比例", zeroMs / valueofMs == 0 ? 1 : valueofMs);
