@@ -6,7 +6,9 @@ import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 import com.alibaba.fastjson.JSONObject;
 import com.thoughtworks.xstream.XStream;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import util.SelfResponse;
 
@@ -18,6 +20,8 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class DemoService implements verifyInterface {
+    @Autowired
+    DemoRepository demoRepository;
     /*
      * description: list steam操作
      * author: jiangyf
@@ -269,6 +273,25 @@ public class DemoService implements verifyInterface {
         return rstDecimal;
     }
 
+    /*
+     * description: 异步更新
+     * author: jiangyf
+     * date: 2023/4/14 11:42
+     * @param
+     * @return util.SelfResponse
+     */
+    @Transactional
+    public SelfResponse threadUpdate() {
+        List<DemoEntity> demoList = generateList4Thread();
+        try{
+            demoRepository.saveAll(demoList);
+        }catch (RuntimeException e){
+            throw e;
+        }
+
+        return SelfResponse.createBySuccessWithMsg("成功");
+    }
+
 
     /*
      * description: 生成list数据
@@ -411,6 +434,27 @@ public class DemoService implements verifyInterface {
 
         return deptList;
     }
+
+    /*
+     * description: 生成线程数组
+     * author: jiangyf
+     * date: 2023/4/14 11:47
+     * @param
+     * @return java.util.List<com.inspur.test.demo.DemoEntity>
+     */
+    public List<DemoEntity> generateList4Thread() {
+        List<DemoEntity> demoList = new ArrayList<>();
+        for (int i = 0; i <= 10000; i++) {
+            DemoEntity demoEntity = new DemoEntity();
+            demoEntity.setId(String.valueOf(i));
+            demoEntity.setCode("101");
+            demoEntity.setName("生产成本开发组");
+            demoEntity.setNote("装备制造事业部");
+            demoList.add(demoEntity);
+        }
+        return demoList;
+    }
+
 
     @Override
     public String verifyInput(String type, String value) {

@@ -48,4 +48,10 @@ public class DemoController {
         return demoService.decimalBattle(input1, input2, runTimes);
 
     }
+    @GetMapping("/threadUpdate")
+    public SelfResponse threadUpdate() {
+        return demoService.threadUpdate();
+
+    }
+
 }
