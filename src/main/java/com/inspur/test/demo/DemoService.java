@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import util.SelfResponse;
 
+import javax.persistence.EntityManager;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.util.*;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 public class DemoService implements verifyInterface {
     @Autowired
     DemoRepository demoRepository;
+    
     /*
      * description: list steam操作
      * author: jiangyf
@@ -79,11 +81,11 @@ public class DemoService implements verifyInterface {
         if (StringUtils.isEmpty(json.get("proName").toString())) {
             return SelfResponse.createByErrorWithMsg("实体名称为空");
         }
-        try {
-            Object object = Class.forName(json.get("proName").toString()).newInstance();
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+//        try {
+//            Object object = Class.forName(json.get("proName").toString()).newInstance();
+//        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+//            throw new RuntimeException(e);
+//        }
         // 组织数据
         List<DemoEntity> demoList = generateList4Bhadle();
         XStream xstream = new XStream();
