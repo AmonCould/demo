@@ -54,4 +54,16 @@ public class DemoController {
 
     }
 
+    @PostMapping("/Strsplit")
+    public SelfResponse decimalBattle(@RequestParam("idStr") String idStr) {
+        return demoService.Strsplit(idStr);
+
+    }
+
+    @PostMapping("/EntitySetTest")
+    public SelfResponse EntitySetTest(@RequestParam("text") String text) {
+        return demoService.EntitySetTest(text);
+
+    }
+
 }

@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class DemoService implements verifyInterface {
     @Autowired
     DemoRepository demoRepository;
-    
+
     /*
      * description: list steam操作
      * author: jiangyf
@@ -285,15 +285,20 @@ public class DemoService implements verifyInterface {
     @Transactional
     public SelfResponse threadUpdate() {
         List<DemoEntity> demoList = generateList4Thread();
-        try{
+        try {
             demoRepository.saveAll(demoList);
-        }catch (RuntimeException e){
+        } catch (RuntimeException e) {
             throw e;
         }
 
         return SelfResponse.createBySuccessWithMsg("成功");
     }
 
+
+    public SelfResponse Strsplit(String idStr) {
+        String[] splitAtt = idStr.split(",");
+        return SelfResponse.createBySuccessWithData(splitAtt);
+    }
 
     /*
      * description: 生成list数据
@@ -462,4 +467,30 @@ public class DemoService implements verifyInterface {
     public String verifyInput(String type, String value) {
         return null;
     }
+
+    /*
+     * description: 实体更新持久态验证
+     * author: jiangyf
+     * date: 2024/2/4 14:15
+     * @param text
+     * 1) 去掉@Transactional，使用@Query进行实体查询不会触发更新；
+     * 2) 保留@Transactional，使用@Query不用实体查询不会触发更新；
+     * @return util.SelfResponse
+     */
+    @Transactional
+    public SelfResponse EntitySetTest(String text){
+        // 查询testDemo表的Cost（会更新数据库）
+        List<DemoEntity> demoEntityList = demoRepository.findCostByID(text);
+        // 查询testDemo表的Cost（不会更新数据库） nativeQuery = true
+        // List<DemoEntity> demoEntityList = demoRepository.findCostByIDNoEntity(text);
+        //
+        // 5.findCostByIDNoEntity(text);
+        // 递归进行set，复刻出现问题的代码
+        for (DemoEntity demo :demoEntityList) {
+            demo.setCost(BigDecimal.valueOf(8888888));
+            demo.setBalance(BigDecimal.valueOf(999999));
+        }
+        return SelfResponse.createBySuccessWithMsg("执行完成");
+    }
+
 }
