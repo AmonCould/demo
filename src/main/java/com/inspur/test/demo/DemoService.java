@@ -479,13 +479,15 @@ public class DemoService implements verifyInterface {
      */
     @Transactional
     public SelfResponse EntitySetTest(String text){
-        // 查询testDemo表的Cost（会更新数据库）
+
+        // 第一种。查询testDemo表的Cost（会更新数据库）
         List<DemoEntity> demoEntityList = demoRepository.findCostByID(text);
-        // 查询testDemo表的Cost（不会更新数据库） nativeQuery = true
+
+
+        // 第二种，查询testDemo表的Cost（不会更新数据库） nativeQuery = true
         // List<DemoEntity> demoEntityList = demoRepository.findCostByIDNoEntity(text);
-        //
-        // 5.findCostByIDNoEntity(text);
-        // 递归进行set，复刻出现问题的代码
+
+        // 递归进行set，复现出现问题的代码
         for (DemoEntity demo :demoEntityList) {
             demo.setCost(BigDecimal.valueOf(8888888));
             demo.setBalance(BigDecimal.valueOf(999999));
