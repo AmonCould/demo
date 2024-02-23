@@ -6,3 +6,5 @@ spring:
     url: jdbc:dm://10.110.90.175:5236/DMSERVER?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=utf-8
     username: cloudlm
     password: LMerp_0522.?
+
+

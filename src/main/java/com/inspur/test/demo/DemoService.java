@@ -6,6 +6,7 @@ import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 import com.alibaba.fastjson.JSONObject;
 import com.thoughtworks.xstream.XStream;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -478,20 +479,30 @@ public class DemoService implements verifyInterface {
      * @return util.SelfResponse
      */
     @Transactional
-    public SelfResponse EntitySetTest(String text){
+    public SelfResponse EntitySetTest(String text) {
 
-        // 第一种。查询testDemo表的Cost（会更新数据库）
-        List<DemoEntity> demoEntityList = demoRepository.findCostByID(text);
+        // 第一种。查询testDemo表的Cost（会更新数据库） nativeQuery = false
+//        List<DemoEntity> demoEntityList = demoRepository.findCostByID(text);
 
 
-        // 第二种，查询testDemo表的Cost（不会更新数据库） nativeQuery = true
-        // List<DemoEntity> demoEntityList = demoRepository.findCostByIDNoEntity(text);
+        // 第二种，查询testDemo表的Cost（会更新数据库） nativeQuery = true
+        List<DemoEntity> demoEntityList = demoRepository.findCostByIDNoEntity(text);
 
-        // 递归进行set，复现出现问题的代码
-        for (DemoEntity demo :demoEntityList) {
+        // 解决方案：复制实体由持久态转为瞬态
+//        List<DemoEntity> demoEntityListNew = new ArrayList<>();
+//        BeanUtils.copyProperties(demoEntityList, demoEntityListNew);
+
+        for (DemoEntity demo : demoEntityList) {
             demo.setCost(BigDecimal.valueOf(8888888));
             demo.setBalance(BigDecimal.valueOf(999999));
         }
+
+        // 解决方案：递归新实体
+//        for (DemoEntity demo : demoEntityListNew) {
+//            demo.setCost(BigDecimal.valueOf(8888888));
+//            demo.setBalance(BigDecimal.valueOf(999999));
+//        }
+
         return SelfResponse.createBySuccessWithMsg("执行完成");
     }
 
