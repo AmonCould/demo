@@ -3,8 +3,6 @@ server:
 spring:
   datasource:
     driver-class-name: dm.jdbc.driver.DmDriver
-    url: jdbc:dm://10.110.90.175:5236/DMSERVER?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=utf-8
-    username: cloudlm
-    password: LMerp_0522.?
-
-
+    url: jdbc:dm://localhost:55236/DMSERVER?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=utf-8
+    username: cloudlocal
+    password: Test1127?!

@@ -475,18 +475,18 @@ public class DemoService implements verifyInterface {
      * date: 2024/2/4 14:15
      * @param text
      * 1) 去掉@Transactional，使用@Query进行实体查询不会触发更新；
-     * 2) 保留@Transactional，使用@Query不用实体查询不会触发更新；
+     * 2) 保留@Transactional，使用@Query查询只要返回实体仍会触发更新；
      * @return util.SelfResponse
      */
     @Transactional
     public SelfResponse EntitySetTest(String text) {
 
         // 第一种。查询testDemo表的Cost（会更新数据库） nativeQuery = false
-//        List<DemoEntity> demoEntityList = demoRepository.findCostByID(text);
+        List<DemoEntity> demoEntityList = demoRepository.findCostByID(text);
 
 
         // 第二种，查询testDemo表的Cost（会更新数据库） nativeQuery = true
-        List<DemoEntity> demoEntityList = demoRepository.findCostByIDNoEntity(text);
+//        List<DemoEntity> demoEntityList = demoRepository.findCostByIDNoEntity(text);
 
         // 解决方案：复制实体由持久态转为瞬态
 //        List<DemoEntity> demoEntityListNew = new ArrayList<>();
