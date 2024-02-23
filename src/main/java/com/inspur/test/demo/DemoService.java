@@ -14,16 +14,23 @@ import org.springframework.util.StringUtils;
 import util.SelfResponse;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceUnit;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static cn.hutool.core.util.NumberUtil.add;
 
 @Service
 @Slf4j
 public class DemoService implements verifyInterface {
     @Autowired
     DemoRepository demoRepository;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     /*
      * description: list steam操作
@@ -487,6 +494,16 @@ public class DemoService implements verifyInterface {
 
         // 第二种，查询testDemo表的Cost（会更新数据库） nativeQuery = true
 //        List<DemoEntity> demoEntityList = demoRepository.findCostByIDNoEntity(text);
+
+        // 第三种，使用findBy（会更新数据库）
+//        List<String> idList = new ArrayList<>();
+//        idList.add(text);
+//        List<DemoEntity> demoEntityList = demoRepository.findAllById(idList);
+
+        // 第四种，
+//        String findCostSQL = "SELECT ID, BALANCE,CODE,COST,NAME,NOTE FROM TESTDEMO WHERE  ID='"+text+"'";
+//        entityManager.createQuery(findCostSQL);
+
 
         // 解决方案：复制实体由持久态转为瞬态
 //        List<DemoEntity> demoEntityListNew = new ArrayList<>();
